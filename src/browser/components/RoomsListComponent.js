@@ -5,6 +5,7 @@ import {
   SHOW_CREATE_ROOM_PANEL,
   requestRoomData
 } from 'Actions/index'
+import { timeSince } from 'Utils/index'
 
 class RoomsListComponent extends React.PureComponent {
   constructor(props) {
@@ -41,7 +42,7 @@ class RoomsListComponent extends React.PureComponent {
             <div>
               <h4><strong>{r.title}</strong></h4>
               <p>{r.lastMessage.user.username}: {r.lastMessage.content}</p>
-              <p className='small-date'>{r.lastMessage.date}</p>
+              <p className='small-date'>{timeSince(r.lastMessage.date)}</p>
             </div>
           </div>
         ))}

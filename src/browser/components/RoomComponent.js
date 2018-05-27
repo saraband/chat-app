@@ -1,5 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import InlineSvg from './InlineSvg'
+import seen from './seen.svg'
+import './RoomComponent.scss'
 
 class RoomComponent extends React.PureComponent {
   constructor(props) {
@@ -18,6 +21,7 @@ class RoomComponent extends React.PureComponent {
 
     return(
       <div id='room-container'>
+        <p><InlineSvg src={seen} className='test' /></p>
         {messages.map(m => <p>{m.user.username} said: {m.content}</p>)}
       </div>
     )

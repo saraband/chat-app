@@ -24,7 +24,8 @@ class CreateRoomPanel extends React.Component {
 
     const {
       createRoom,
-      currentUser
+      currentUser,
+      hideCreateRoomPanel
     } = this.props
 
     const {
@@ -39,6 +40,7 @@ class CreateRoomPanel extends React.Component {
       return
 
     createRoom(currentUser, title, message, participants)
+    hideCreateRoomPanel()
   }
 
   handleChange = (event) => {

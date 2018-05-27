@@ -9,6 +9,7 @@ module.exports = {
       Components: __dirname + '/src/browser/components',
       Actions: __dirname + '/src/browser/actions',
       Reducers: __dirname + '/src/browser/reducers',
+      Utils: __dirname + '/src/utils',
       Root: __dirname + '/src/browser'
     }
   },
@@ -39,6 +40,10 @@ module.exports = {
           loader: 'file-loader',
           options: {}
         }
+      },
+      {
+        test: /\.svg$/,
+        loader: 'svg-inline-loader'
       }
     ]
   },
