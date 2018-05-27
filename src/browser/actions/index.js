@@ -1,4 +1,8 @@
+import socket from 'Root/Socket'
+
 export const SET_ROOMS_LIST_FILTER = 'SET_ROOMS_LIST_FILTER'
+export const SHOW_CREATE_ROOM_PANEL = 'SHOW_CREATE_ROOM_PANEL'
+export const HIDE_CREATE_ROOM_PANEL = 'HIDE_CREATE_ROOM_PANEL'
 
 export const REQUEST_USERS_LIST_PENDING = 'REQUEST_USERS_LIST_PENDING'
 export const REQUEST_USERS_LIST_SUCCESS = 'REQUEST_USERS_LIST_SUCCESS'
@@ -27,10 +31,26 @@ export const setRoomsListFilter = (filter) => {
   }
 }
 
+export const requestUsersList = (id) => {
+  return (dispatch) => {
+    dispatch({type: REQUEST_USERS_LIST_PENDING})
+
+    socket.emit('REQUEST_USERS_LIST', id)
+  }
+}
+
 export const receiveUsersList = (usersList) => {
   return {
     type: REQUEST_USERS_LIST_SUCCESS,
     usersList
+  }
+}
+
+export const requestRoomsList = (id) => {
+  return (dispatch) => {
+    dispatch({type: REQUEST_ROOMS_LIST_PENDING})
+
+    socket.emit('REQUEST_ROOMS_LIST', id)
   }
 }
 
@@ -52,5 +72,18 @@ export const receiveMessage = (message) => {
   return {
     type: SEND_MESSAGE_SUCCESS,
     roomData
+  }
+}
+
+export const createRoom = (user, title, message, participants) => {
+  return (dispatch) => {
+    dispatch({type: CREATE_ROOM_PENDING})
+
+    socket.emit('CREATE_ROOM', JSON.stringify({
+      user,
+      title,
+      message,
+      participants
+    }))
   }
 }

@@ -1,0 +1,1 @@
+export default require('socket.io-client')();

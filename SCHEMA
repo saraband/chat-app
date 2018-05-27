@@ -6,7 +6,8 @@ rooms: Array<Object> {
   _id,
   title: String
   lastMessage: Object,
-  seenBy: Array<Object{id: Int64, date: Int32}>
+  participants: Array<Object<id, username: string>>
+  seenBy: Array<Object{id, date: Int32}>
 }
 
 users: Array<Object> {
@@ -16,6 +17,8 @@ users: Array<Object> {
 
 messages: Array<Object> {
   _id,
+  roomId,
+  userId,
   username: String,
   content: String,
   date: Int32
