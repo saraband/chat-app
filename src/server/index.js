@@ -1,5 +1,6 @@
 import express from 'express'
 import { MongoClient, ObjectId } from 'mongodb'
+import bodyParser from 'body-parser'
 
 MongoClient.connect('mongodb://localhost:27017', (err, client) => {
   if(err)
@@ -12,6 +13,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
 
   // HTTP
   app.use(express.static(__dirname + './../../public'))
+  app.use(bodyParser.json())
   app.get('*', (req, res) => {
     res.setHeader('Content-Type', 'text/html')
     res.end(`
@@ -29,6 +31,32 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
     `)
   })
 
+  app.post('/roomData', (req, res) => {
+    const {
+      id
+    } = req.body
+
+    if(id === undefined) {
+      res.status(500).end()
+      return
+    }
+
+    // Retrieve room data and messages
+    db.collection('rooms').findOne({_id: ObjectId(id)}, (err, room) => {
+      db.collection('messages').find({roomId: id}).toArray((err, messages) => {
+        const roomData = {
+          ...room,
+          messages
+        }
+
+        console.log(id + ', '+messages)
+
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify(roomData))
+      })
+    })
+  })
+
   // SOCKETS
   io.on('connection', (socket) => {
 
@@ -37,7 +65,6 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
 
       // I only retrieve rooms with user as participant [TODO]
       db.collection('rooms').find({}).toArray((err, roomsList) => {
-        console.log(`Rooms list: ${roomsList}`)
         socket.emit('RECEIVE_ROOMS_LIST', JSON.stringify(roomsList))
       })
     })
@@ -46,10 +73,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
     socket.on('REQUEST_USERS_LIST', (id) => {
 
       // excluding one owns id of the users list
-      db.collection('users').find({_id: {$not: {$eq: ObjectId(id)}}}).toArray((err, usersList) => {
-        console.log(`Users list: ${usersList}`)
-        socket.emit('RECEIVE_USERS_LIST', JSON.stringify(usersList))
-      })
+      socket.emit('RECEIVE_USERS_LIST', JSON.stringify(usersList))
     })
 
     // User wishes to create a new room
@@ -75,11 +99,9 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
 
       // Creating room
       db.collection('rooms').insertOne(newRoom, (err, response) => {
-        console.log(`Room created: ${newRoom}`)
 
         // SEND TO ALL NEW ROOMS LIST
         db.collection('rooms').find({}).toArray((err, roomsList) => {
-          console.log(`Rooms list: ${roomsList}`)
           io.emit('RECEIVE_ROOMS_LIST', JSON.stringify(roomsList))
 
           // Insert message into messages collection
@@ -88,7 +110,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
     })
   })
 
-  http.listen(8080);
+  http.listen(8080)
 })
 
 /*

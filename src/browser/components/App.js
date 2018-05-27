@@ -27,12 +27,12 @@ class App extends React.Component {
     } = this.props
 
     socket.on('RECEIVE_ROOMS_LIST', (roomsList) => {
-      console.log(`Received rooms list: ${roomsList}`)
+      //console.log(`Received rooms list: ${roomsList}`)
       receiveRoomsList(JSON.parse(roomsList))
     })
 
     socket.on('RECEIVE_USERS_LIST', (usersList) => {
-      console.log(`Received users list: ${usersList}`)
+      //console.log(`Received users list: ${usersList}`)
       receiveUsersList(JSON.parse(usersList))
     })
 

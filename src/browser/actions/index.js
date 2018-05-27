@@ -61,10 +61,32 @@ export const receiveRoomsList = (roomsList) => {
   }
 }
 
-export const receiveRoomData = (roomData) => {
-  return {
-    type: REQUEST_ROOM_DATA_SUCCESS,
-    roomData
+export const requestRoomData = (id) => {
+  return (dispatch) => {
+    dispatch({type: REQUEST_ROOM_DATA_PENDING})
+
+    fetch('/roomData', {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'post',
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        id
+      })
+    })
+    .then(data => data.json(),
+      error => {
+        console.error(error)
+        dispatch({type: REQUEST_ROOM_DATA_FAILED})
+    })
+    .then(roomData => {
+      dispatch({
+        type: REQUEST_ROOM_DATA_SUCCESS,
+        roomData
+      })
+    })
   }
 }
 

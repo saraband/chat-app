@@ -2,7 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import './RoomsListComponent.scss'
 import {
-  SHOW_CREATE_ROOM_PANEL
+  SHOW_CREATE_ROOM_PANEL,
+  requestRoomData
 } from 'Actions/index'
 
 class RoomsListComponent extends React.PureComponent {
@@ -16,7 +17,10 @@ class RoomsListComponent extends React.PureComponent {
   }
 
   render() {
-    const { roomsList } = this.props
+    const {
+      roomsList,
+      requestRoomData
+    } = this.props
 
     if(!roomsList.length) {
       return (
@@ -31,7 +35,8 @@ class RoomsListComponent extends React.PureComponent {
       <div>
         <a href='#' onClick={this.handleCreateRoom}>Create room</a>
         {roomsList.map(r => (
-          <div className='rooms-list-item'>
+          <div className='rooms-list-item'
+            onClick={() => requestRoomData(r._id)} >
             <img src='https://picsum.photos/50/50/?random' />
             <div>
               <h4><strong>{r.title}</strong></h4>
@@ -53,7 +58,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    showCreateRoomPanel: () => dispatch({type: SHOW_CREATE_ROOM_PANEL})
+    showCreateRoomPanel: () => dispatch({type: SHOW_CREATE_ROOM_PANEL}),
+    requestRoomData: (id) => dispatch(requestRoomData(id))
   }
 }
 

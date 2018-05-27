@@ -3,10 +3,11 @@ import {
   REQUEST_ROOMS_LIST_SUCCESS,
   SHOW_CREATE_ROOM_PANEL,
   HIDE_CREATE_ROOM_PANEL,
-  REQUEST_USERS_LIST_SUCCESS
+  REQUEST_USERS_LIST_SUCCESS,
+  REQUEST_ROOM_DATA_SUCCESS
 } from 'Actions/index'
 
-const isCreateRoomPanelOpen = (state = true, action) => {
+const isCreateRoomPanelOpen = (state = false, action) => {
   switch(action.type) {
     case SHOW_CREATE_ROOM_PANEL:
       return true
@@ -48,9 +49,19 @@ const usersList = (state = [], action) => {
   }
 }
 
+const currentRoom = (state = {}, action) => {
+  switch(action.type) {
+    case REQUEST_ROOM_DATA_SUCCESS:
+      return {...action.roomData}
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   currentUser,
   roomsList,
   isCreateRoomPanelOpen,
-  usersList
+  usersList,
+  currentRoom
 })
