@@ -1,0 +1,14 @@
+input {
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  padding: 10px;
+  font-size: 20xpx;
+  font-family: inherits;
+  margin: 15px;
+  width: 250px;
+}
+
+input:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 .2rem rgba(0,123,255,.25);
+}

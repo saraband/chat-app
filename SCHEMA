@@ -1,0 +1,47 @@
+//////////////
+// DATABASE //
+//////////////
+
+rooms: Array<Object> {
+  _id,
+  title: String
+  lastMessage: Object,
+  seenBy: Array<Object{id: Int64, date: Int32}>
+}
+
+users: Array<Object> {
+  _id,
+  username: String
+}
+
+messages: Array<Object> {
+  _id,
+  username: String,
+  content: String,
+  date: Int32
+}
+
+/////////////////
+// REDUX STATE //
+/////////////////
+
+rooms
+roomsListFilter
+currentRoom
+users
+currentUser
+
+isRetrievingUsersList
+isRetrievingRoomsList
+isRetrievingRoomData
+
+///////////////
+// API CALLS //
+///////////////
+
+requestUsersList
+requestRoomsList
+requestRoomData
+
+sendMessage
+createRoom
