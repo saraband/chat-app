@@ -49,8 +49,6 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
           messages
         }
 
-        console.log(id + ', '+messages)
-
         res.setHeader('Content-Type', 'application/json')
         res.end(JSON.stringify(roomData))
       })
@@ -106,6 +104,28 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
 
           // Insert message into messages collection
         })
+      })
+    })
+
+    // Sending a message
+    socket.on('SEND_MESSAGE', (data) => {
+      const {
+        user,
+        roomId,
+        message
+      } = JSON.parse(data)
+
+      const newMessage = {
+        roomId,
+        user,
+        content: message,
+        date: Date.now()
+      }
+
+      db.collection('messages').insertOne(newMessage, (err, result) => {
+        console.log(message)
+        // Send message to all clients
+        io.emit('RECEIVE_MESSAGE', JSON.stringify(newMessage))
       })
     })
   })

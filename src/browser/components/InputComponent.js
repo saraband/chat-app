@@ -1,8 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import './InputComponent.scss'
+import {
+  sendMessage
+} from 'Actions/index'
 
-export default class InputComponent extends React.PureComponent {
+class InputComponent extends React.PureComponent {
   constructor(props) {
     super(props)
 
@@ -18,7 +21,22 @@ export default class InputComponent extends React.PureComponent {
 
   handleSubmit = (event) => {
     event.preventDefault()
-    console.log('ok')
+    
+    const {
+      currentRoom,
+      currentUser,
+      sendMessage
+    } = this.props
+
+    const { message } = this.state
+
+    if(currentUser === undefined
+    || currentRoom === undefined
+    || !message.length)
+      return
+
+    sendMessage(currentUser, currentRoom._id, message)
+    this.setState({message: ''})
   }
 
   componentDidMount() {
@@ -41,3 +59,20 @@ export default class InputComponent extends React.PureComponent {
     )
   }
 } 
+
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser,
+    currentRoom: state.currentRoom
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    sendMessage: (user, roomId, message) => dispatch(sendMessage(user, roomId, message))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps)
+  (InputComponent)

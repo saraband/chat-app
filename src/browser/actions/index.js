@@ -90,10 +90,22 @@ export const requestRoomData = (id) => {
   }
 }
 
+export const sendMessage = (user, roomId, message) => {
+  return (dispatch) => {
+    dispatch({type: SEND_MESSAGE_PENDING})
+
+    socket.emit('SEND_MESSAGE', JSON.stringify({
+      user,
+      roomId,
+      message
+    }))
+  }
+}
+
 export const receiveMessage = (message) => {
   return {
     type: SEND_MESSAGE_SUCCESS,
-    roomData
+    message
   }
 }
 

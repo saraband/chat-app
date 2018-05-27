@@ -4,7 +4,8 @@ import {
   SHOW_CREATE_ROOM_PANEL,
   HIDE_CREATE_ROOM_PANEL,
   REQUEST_USERS_LIST_SUCCESS,
-  REQUEST_ROOM_DATA_SUCCESS
+  REQUEST_ROOM_DATA_SUCCESS,
+  SEND_MESSAGE_SUCCESS
 } from 'Actions/index'
 
 const isCreateRoomPanelOpen = (state = false, action) => {
@@ -53,6 +54,23 @@ const currentRoom = (state = {}, action) => {
   switch(action.type) {
     case REQUEST_ROOM_DATA_SUCCESS:
       return {...action.roomData}
+    case SEND_MESSAGE_SUCCESS:
+    
+      // In case no current room is selected
+      // No need to update anything
+      if(state.messages === undefined)
+        return state
+
+      // Update messages in current room
+      let nextState = {
+        ...state,
+        messages: [
+          ...state.messages,
+          action.message
+        ]
+      }
+
+      return nextState
     default:
       return state
   }

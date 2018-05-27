@@ -16,11 +16,9 @@ class RoomComponent extends React.PureComponent {
     if(title === undefined)
       return <p>No current room</p>
 
-    console.log(messages)
-
     return(
       <div id='room-container'>
-        {messages.map(m => <p>{m.username} said: {m.content}}</p>)}
+        {messages.map(m => <p>{m.user.username} said: {m.content}</p>)}
       </div>
     )
   }

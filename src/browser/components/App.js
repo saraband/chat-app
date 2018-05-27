@@ -9,7 +9,8 @@ import socket from 'Root/Socket'
 import {
   requestRoomsList,
   receiveRoomsList,
-  receiveUsersList
+  receiveUsersList,
+  receiveMessage
 } from 'Actions/index'
 import CreateRoomPanel from './CreateRoomPanel'
 
@@ -23,6 +24,7 @@ class App extends React.Component {
       requestRoomsList,
       receiveRoomsList,
       receiveUsersList,
+      receiveMessage,
       currentUser
     } = this.props
 
@@ -34,6 +36,10 @@ class App extends React.Component {
     socket.on('RECEIVE_USERS_LIST', (usersList) => {
       //console.log(`Received users list: ${usersList}`)
       receiveUsersList(JSON.parse(usersList))
+    })
+
+    socket.on('RECEIVE_MESSAGE', (message) => {
+      receiveMessage(JSON.parse(message))
     })
 
     // Requesting rooms list the first time
@@ -79,7 +85,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     requestRoomsList: (id) => dispatch(requestRoomsList(id)),
     receiveRoomsList: (roomsList) => dispatch(receiveRoomsList(roomsList)),
-    receiveUsersList: (usersList) => dispatch(receiveUsersList(usersList))
+    receiveUsersList: (usersList) => dispatch(receiveUsersList(usersList)),
+    receiveMessage: (message) => dispatch(receiveMessage(message))
   }
 }
 
