@@ -71,7 +71,9 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
     socket.on('REQUEST_USERS_LIST', (id) => {
 
       // excluding one owns id of the users list
-      socket.emit('RECEIVE_USERS_LIST', JSON.stringify(usersList))
+      db.collection('users').find({_id: {$not: {$eq: ObjectId(id)}}}).toArray((err, usersList) => {
+        socket.emit('RECEIVE_USERS_LIST', JSON.stringify(usersList))
+      })
     })
 
     // User wishes to create a new room
@@ -83,14 +85,15 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
         participants
       } = JSON.parse(data)
 
+      const lastMessage = {
+        content: message,
+        date: Date.now(),
+        user
+      }
+
       const newRoom = {
         title,
-        lastMessage: {
-          content: message,
-          date: Date.now(),
-          userId: user.id,
-          username: user.username
-        },
+        lastMessage,
         participants,
         seenBy: [{...user, date: Date.now()}]
       }
@@ -98,11 +101,17 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
       // Creating room
       db.collection('rooms').insertOne(newRoom, (err, response) => {
 
+        // Actually insert the lastMessage into the room
+        db.collection('messages').insertOne({
+          ...lastMessage,
+          roomId: response.insertedId.toString()
+        }, (err, response) => {
+
+        })
+
         // SEND TO ALL NEW ROOMS LIST
         db.collection('rooms').find({}).toArray((err, roomsList) => {
           io.emit('RECEIVE_ROOMS_LIST', JSON.stringify(roomsList))
-
-          // Insert message into messages collection
         })
       })
     })
@@ -123,9 +132,18 @@ MongoClient.connect('mongodb://localhost:27017', (err, client) => {
       }
 
       db.collection('messages').insertOne(newMessage, (err, result) => {
-        console.log(message)
+
         // Send message to all clients
         io.emit('RECEIVE_MESSAGE', JSON.stringify(newMessage))
+
+        // Update rooms lastMessage
+        db.collection('rooms').updateOne({_id: ObjectId(roomId)}, {$set: {lastMessage: newMessage}}, (err, response) => {
+
+          // SEND TO ALL UPDATED ROOMS LIST
+          db.collection('rooms').find({}).toArray((err, roomsList) => {
+            io.emit('RECEIVE_ROOMS_LIST', JSON.stringify(roomsList))
+          })
+        })
       })
     })
   })

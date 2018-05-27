@@ -36,6 +36,19 @@ const roomsList = (state = [], action) => {
   switch(action.type) {
     case REQUEST_ROOMS_LIST_SUCCESS:
       return [...action.roomsList]
+    case SEND_MESSAGE_SUCCESS:
+      return state.map(room => {
+
+        // If the message received belongs in the room, update its lastMessage property
+        if(room._id === action.message.roomId)
+          return {
+            ...room,
+            lastMessage: action.message
+          }
+
+        // If not, don't do anything
+        return room
+      })
     default:
       return state
   }
@@ -55,7 +68,7 @@ const currentRoom = (state = {}, action) => {
     case REQUEST_ROOM_DATA_SUCCESS:
       return {...action.roomData}
     case SEND_MESSAGE_SUCCESS:
-    
+
       // In case no current room is selected
       // No need to update anything
       if(state.messages === undefined)

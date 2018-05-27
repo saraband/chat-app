@@ -40,7 +40,7 @@ class RoomsListComponent extends React.PureComponent {
             <img src='https://picsum.photos/50/50/?random' />
             <div>
               <h4><strong>{r.title}</strong></h4>
-              <p>{r.lastMessage.username}: {r.lastMessage.content}</p>
+              <p>{r.lastMessage.user.username}: {r.lastMessage.content}</p>
               <p className='small-date'>{r.lastMessage.date}</p>
             </div>
           </div>
